@@ -1,44 +1,41 @@
 package com.rizvankarimov.appointment_app.security;
 
-
-import com.rizvankarimov.appointment_app.entity.Role;
 import com.rizvankarimov.appointment_app.entity.User;
-import com.rizvankarimov.appointment_app.repository.UserRepository;
+import com.rizvankarimov.appointment_app.service.UserService;
+import com.rizvankarimov.appointment_app.utils.SecurityUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
-
+import java.util.Arrays;
+import java.util.Set;
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
-    private UserRepository userRepository;
+public class CustomUserDetailsService implements UserDetailsService
+{
+    private final UserService userService;
 
-    public CustomUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomUserDetailsService(@Lazy UserService userService)
+    {
+        this.userService = userService;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
+    {
+        User user = userService.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        if (user != null) {
-            return new org.springframework.security.core.userdetails.User(user.getEmail(),
-                    user.getPassword(),
-                    mapRolesToAuthorities(user.getRoles()));
-        }else{
-            throw new UsernameNotFoundException("Invalid username or password.");
-        }
-    }
+        Set<GrantedAuthority> authorities = Set.of(SecurityUtils.convertToAuthority(Arrays.toString(user.getRole().name())));
 
-    private Collection < ? extends GrantedAuthority> mapRolesToAuthorities(Collection <Role> roles) {
-        Collection < ? extends GrantedAuthority> mapRoles = roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toList());
-        return mapRoles;
+        return UserPrincipal.builder()
+                .user(user)
+                .id(user.getId())
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .authorities(authorities)
+                .build();
     }
 }

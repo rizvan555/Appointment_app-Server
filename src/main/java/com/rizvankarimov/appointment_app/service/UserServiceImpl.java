@@ -1,74 +1,51 @@
 package com.rizvankarimov.appointment_app.service;
 
 
-import com.rizvankarimov.appointment_app.dto.UserDto;
 import com.rizvankarimov.appointment_app.entity.Role;
 import com.rizvankarimov.appointment_app.entity.User;
-import com.rizvankarimov.appointment_app.repository.RoleRepository;
 import com.rizvankarimov.appointment_app.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserService {
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService
+{
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private PasswordEncoder passwordEncoder;
+    @Override
+    public User saveUser(User user)
+    {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(Role.USER);
+        user.setCreateTime(LocalDateTime.now());
 
-    public UserServiceImpl(UserRepository userRepository,
-                           RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
+        return userRepository.save(user);
     }
 
     @Override
-    public void saveUser(UserDto userDto) {
-        User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setPhone(userDto.getPhone());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-
-        Role role = roleRepository.findByName("ROLE_ADMIN");
-        if(role == null){
-            role = checkRoleExist();
-        }
-        user.setRoles(Arrays.asList(role));
-        userRepository.save(user);
+    public Optional<User> findByUsername(String username)
+    {
+        return userRepository.findByUsername(username);
     }
 
     @Override
-    public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    @Transactional //Transactional is required when executing an update/delete query.
+    public void changeRole(Role newRole, String username)
+    {
+        userRepository.updateUserRole(username, newRole);
     }
 
     @Override
-    public List<UserDto> findAllUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream()
-                .map((user) -> mapToUserDto(user))
-                .collect(Collectors.toList());
-    }
-
-    private UserDto mapToUserDto(User user){
-        UserDto userDto = new UserDto();
-        String[] str = user.getUsername().split(" ");
-        userDto.setUsername(str[0]);
-        userDto.setPhone(str[1]);
-        userDto.setEmail(user.getEmail());
-        return userDto;
-    }
-
-    private Role checkRoleExist(){
-        Role role = new Role();
-        role.setName("ROLE_ADMIN");
-        return roleRepository.save(role);
+    public List<User> findAllUsers()
+    {
+        return userRepository.findAll();
     }
 }

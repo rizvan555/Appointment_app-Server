@@ -1,12 +1,24 @@
 package com.rizvankarimov.appointment_app.service;
 
-import com.rizvankarimov.appointment_app.dto.UserDto;
+
+import com.rizvankarimov.appointment_app.entity.Role;
 import com.rizvankarimov.appointment_app.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface UserService {
-    void saveUser(UserDto userDto); // save user to database
-    User findUserByEmail(String email); // find user by email
-    List<UserDto> findAllUsers(); // find all users
+/**
+ * @author sa
+ * @date 23.07.2023
+ * @time 14:24
+ */
+public interface UserService
+{
+    User saveUser(User user);
+
+    Optional<User> findByUsername(String username);
+
+    void changeRole(Role newRole, String username);
+
+    List<User> findAllUsers();
 }
