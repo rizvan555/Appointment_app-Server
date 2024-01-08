@@ -14,10 +14,7 @@ import java.util.List;
 public class User
 {
     private static final long serialVersionUID = 1L;
-    @PrePersist
-    protected void onCreate() {
-        createDate = LocalDateTime.now();
-    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,8 +30,6 @@ public class User
 
     @Column(nullable=false)
     private String password;
-
-    private LocalDateTime createDate;
 
     @Transient
     private String accessToken;
