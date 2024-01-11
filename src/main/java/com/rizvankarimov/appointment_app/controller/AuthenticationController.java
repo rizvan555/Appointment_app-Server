@@ -1,5 +1,6 @@
 package com.rizvankarimov.appointment_app.controller;
 
+
 import com.rizvankarimov.appointment_app.entity.User;
 import com.rizvankarimov.appointment_app.service.AuthenticationService;
 import com.rizvankarimov.appointment_app.service.JwtRefreshTokenService;
@@ -9,17 +10,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @author sa
+ * @date 23.07.2023
+ * @time 15:00
+ */
 @RestController
 @RequestMapping("api/authentication")//pre-path
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class AuthenticationController
 {
     private final AuthenticationService authenticationService;
     private final UserService userService;
     private final JwtRefreshTokenService jwtRefreshTokenService;
 
-    @PostMapping("register")//api/authentication/sign-up
-    public ResponseEntity<?> register(@RequestBody User user)
+    @PostMapping("register")
+    public ResponseEntity<?> signUp(@RequestBody User user)
     {
         if (userService.findByUsername(user.getUsername()).isPresent())
         {
@@ -28,8 +35,8 @@ public class AuthenticationController
         return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
     }
 
-    @PostMapping("login")
-    public ResponseEntity<?> login(@RequestBody User user)
+    @PostMapping("login")//api/authentication/sign-in
+    public ResponseEntity<?> signIn(@RequestBody User user)
     {
         return new ResponseEntity<>(authenticationService.signInAndReturnJWT(user), HttpStatus.OK);
     }

@@ -20,8 +20,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 
 @Configuration
 @EnableWebSecurity
@@ -33,20 +35,35 @@ public class SecurityConfig
     @Autowired
     private final CustomUserDetailsService customUserDetailsService;
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
     {
-        http.cors(Customizer.withDefaults());//cross-origin-resource-sharing
         http.csrf(AbstractHttpConfigurer::disable);
+        //http.cors(cors -> cors.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()));
         http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.authorizeRequests()
-                .requestMatchers("/api/authentication/**").permitAll()//login and register pre-path
-                .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
+        http
+                .authorizeHttpRequests(auth -> {
+                auth.requestMatchers("/api/authentication/**").permitAll();
+                auth.requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name());
+                auth.requestMatchers("/api/user/**").hasRole(Role.USER.name())
                 .anyRequest().authenticated();
+                });
+
+
+        http
+                .formLogin(form -> form
+                        .loginPage("/api/authentication/login")
+                        .defaultSuccessUrl("/api/authentication/about")
+                        .permitAll()
+
+                );
+
 
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
@@ -72,21 +89,19 @@ public class SecurityConfig
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer()
-    {
-        return new WebMvcConfigurer()
-        {
-            @Override
-            public void addCorsMappings(CorsRegistry registry)
-            {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
-                        .allowCredentials(true)
-                        .allowedHeaders("*");
-            }
-        };
-    }
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**")
+//                        .allowedOrigins("http://localhost:5173")
+//                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+//                        .allowCredentials(true)
+//                        .allowedHeaders("Origin", "Content-Type", "Accept")
+//                        .exposedHeaders("Authorization"); // Eklediğimiz satır
+//            }
+//        };
+//    }
 }
 

@@ -1,6 +1,6 @@
 package com.rizvankarimov.appointment_app.service;
 
-import com.rizvankarimov.appointment_app.entity.JwtRefreshToken;
+
 import com.rizvankarimov.appointment_app.entity.User;
 import com.rizvankarimov.appointment_app.repository.JwtRefreshTokenRepository;
 import com.rizvankarimov.appointment_app.repository.UserRepository;
@@ -10,13 +10,18 @@ import com.rizvankarimov.appointment_app.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
+import com.rizvankarimov.appointment_app.entity.JwtRefreshToken;
 
+/**
+ * @author sa
+ * @date 23.07.2023
+ * @time 14:27
+ */
 @Service
 @RequiredArgsConstructor
 public class JwtRefreshTokenServiceImpl implements JwtRefreshTokenService
@@ -42,10 +47,12 @@ public class JwtRefreshTokenServiceImpl implements JwtRefreshTokenService
     }
 
     @Override
-    public User generateAccessTokenFromRefreshToken(String refreshTokenId) {
+    public User generateAccessTokenFromRefreshToken(String refreshTokenId)
+    {
         JwtRefreshToken jwtRefreshToken = jwtRefreshTokenRepository.findById(refreshTokenId).orElseThrow();
 
-        if (jwtRefreshToken.getExpirationDate().isBefore(LocalDateTime.now())) {
+        if (jwtRefreshToken.getExpirationDate().isBefore(LocalDateTime.now()))
+        {
             throw new RuntimeException("JWT refresh token is not valid.");
         }
 
@@ -55,7 +62,7 @@ public class JwtRefreshTokenServiceImpl implements JwtRefreshTokenService
                 .id(user.getId())
                 .username(user.getUsername())
                 .password(user.getPassword())
-                .authorities(Set.of(SecurityUtils.convertToAuthority(Arrays.toString(user.getRole().name()))))
+                .authorities(Set.of(SecurityUtils.convertToAuthority(Arrays.toString(user.getRole().name().toCharArray()))))
                 .build();
 
         String accessToken = jwtProvider.generateToken(userPrincipal);

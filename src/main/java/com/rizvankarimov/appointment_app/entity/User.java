@@ -1,50 +1,42 @@
 package com.rizvankarimov.appointment_app.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.context.annotation.Bean;
-
+import lombok.Data;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * @author sa
+ * @date 23.07.2023
+ * @time 14:04
+ */
 @Data
 @Entity
-@Table(name="users.html")
+@Table(name = "users")
 public class User
 {
-    private static final long serialVersionUID = 1L;
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false)
+    @Column(name = "username", unique = true, nullable = false, length = 100)
     private String username;
 
+    @Column(name = "password", nullable = false)
+    private String password;
+
+    @Column(name = "phone", nullable = false)
     private String phone;
 
-    @Column(nullable=false, unique=true)
-    private String email;
+    @Column(name = "create_time", nullable = false)
+    private LocalDateTime createTime;
 
-    @Column(nullable=false)
-    private String password;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
 
     @Transient
     private String accessToken;
 
     @Transient
     private String refreshToken;
-
-    @Column(name = "create_time", nullable = false)
-    private LocalDateTime createTime;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
-
-    public Bean getRole() {
-        return null;
-    }
 }

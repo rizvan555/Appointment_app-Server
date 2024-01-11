@@ -12,6 +12,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Set;
+
+/**
+ * @author sa
+ * @date 23.07.2023
+ * @time 14:32
+ */
 @Service
 public class CustomUserDetailsService implements UserDetailsService
 {
@@ -28,7 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService
         User user = userService.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        Set<GrantedAuthority> authorities = Set.of(SecurityUtils.convertToAuthority(Arrays.toString(user.getRole().name())));
+        Set<GrantedAuthority> authorities = Set.of(SecurityUtils.convertToAuthority(Arrays.toString(user.getRole().name().toCharArray())));
 
         return UserPrincipal.builder()
                 .user(user)

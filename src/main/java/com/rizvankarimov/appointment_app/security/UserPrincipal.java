@@ -9,9 +9,15 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+
 import java.util.Collection;
 import java.util.Set;
 
+/**
+ * @author sa
+ * @date 23.07.2023
+ * @time 14:30
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,12 +28,7 @@ public class UserPrincipal implements UserDetails
     private String username;
     transient private String password; //don't show up on serialized places.
     transient private User user; //user for only login operation, don't use in JWT.
-    @Getter
     private Set<GrantedAuthority> authorities;
-
-    public User getUser() {
-        return user;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities()
