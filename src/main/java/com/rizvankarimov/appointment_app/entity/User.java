@@ -27,6 +27,9 @@ public class User
     @Column(name = "phone", nullable = false)
     private String phone;
 
+    @Column(name = "email", nullable = false)
+    private String email;
+
     @Column(name = "create_time", nullable = false)
     private LocalDateTime createTime;
 

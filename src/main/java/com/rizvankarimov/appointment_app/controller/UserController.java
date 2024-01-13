@@ -7,19 +7,26 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import com.rizvankarimov.appointment_app.security.UserPrincipal;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("api/user")//pre-path
+@RequestMapping("api/users")
 @RequiredArgsConstructor
 public class UserController
 {
     private final UserService userService;
+    @GetMapping("allUsers")
+    public ResponseEntity<?> getAllUsers()
+    {
+        return ResponseEntity.ok(userService.findAllUsers());
+    }
 
+    @GetMapping("{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id)
+    {
+        return ResponseEntity.ok(userService.findUserById(id));
+    }
 
     @PutMapping("change/{role}")//api/user/change/{role}
     public ResponseEntity<?> changeRole(@AuthenticationPrincipal UserPrincipal userPrincipal, @PathVariable Role role)

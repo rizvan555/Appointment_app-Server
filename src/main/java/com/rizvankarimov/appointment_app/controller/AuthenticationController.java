@@ -10,15 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * @author sa
- * @date 23.07.2023
- * @time 15:00
- */
 @RestController
-@RequestMapping("api/authentication")//pre-path
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("api/authentication")
 public class AuthenticationController
 {
     private final AuthenticationService authenticationService;
@@ -35,7 +29,7 @@ public class AuthenticationController
         return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
     }
 
-    @PostMapping("login")//api/authentication/sign-in
+    @PostMapping("login")
     public ResponseEntity<?> signIn(@RequestBody User user)
     {
         return new ResponseEntity<>(authenticationService.signInAndReturnJWT(user), HttpStatus.OK);
@@ -46,4 +40,5 @@ public class AuthenticationController
     {
         return ResponseEntity.ok(jwtRefreshTokenService.generateAccessTokenFromRefreshToken(token));
     }
+
 }
