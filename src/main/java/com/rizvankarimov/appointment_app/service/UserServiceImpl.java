@@ -1,8 +1,10 @@
 package com.rizvankarimov.appointment_app.service;
 
 
+import com.rizvankarimov.appointment_app.entity.MyServices;
 import com.rizvankarimov.appointment_app.entity.Role;
 import com.rizvankarimov.appointment_app.entity.User;
+import com.rizvankarimov.appointment_app.repository.ServiceRepository;
 import com.rizvankarimov.appointment_app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService
 {
     private final UserRepository userRepository;
+    private final ServiceRepository serviceRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -53,4 +56,10 @@ public class UserServiceImpl implements UserService
     public User findUserById(Long id) {
         return userRepository.findById(id).get();
     }
+
+    @Override
+    public Service addService(MyServices myServices)
+    {
+    return (Service) serviceRepository.save(myServices);
 }
+    }
