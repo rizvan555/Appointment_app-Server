@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/admin")//pre-path
+@RequestMapping("api/users")//pre-path
 @RequiredArgsConstructor
 public class AdminController
 {
     private final UserService userService;
 
-    @GetMapping("all")//api/admin/all
-    public ResponseEntity<?> findAllUsers()
+    @GetMapping("dashboard/admin/allUsers")
+    public ResponseEntity<?> getAllUsers()
     {
         return ResponseEntity.ok(userService.findAllUsers());
     }

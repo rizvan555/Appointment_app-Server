@@ -27,4 +27,7 @@ public interface UserService
     User findUserById(Long id);
 
     Service addService(MyServices myServices);
+
+
+    void createAdminUser();
 }

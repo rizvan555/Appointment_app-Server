@@ -23,6 +23,7 @@ public class AuthenticationServiceImpl implements AuthenticationService
     private final AuthenticationManager authenticationManager;
     private final JwtRefreshTokenService jwtRefreshTokenService;
 
+
     @Override
     public User signInAndReturnJWT(User signInRequest)
     {

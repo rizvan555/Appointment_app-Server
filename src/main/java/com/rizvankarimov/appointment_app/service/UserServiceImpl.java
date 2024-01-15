@@ -1,6 +1,5 @@
 package com.rizvankarimov.appointment_app.service;
 
-
 import com.rizvankarimov.appointment_app.entity.MyServices;
 import com.rizvankarimov.appointment_app.entity.Role;
 import com.rizvankarimov.appointment_app.entity.User;
@@ -10,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +20,16 @@ public class UserServiceImpl implements UserService
     private final UserRepository userRepository;
     private final ServiceRepository serviceRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public void createAdminUser() {
+        User adminUser = new User();
+        adminUser.setUsername("rizvan84");
+        adminUser.setPassword(passwordEncoder.encode("123456"));
+        adminUser.setRole(Role.ADMIN);
+        adminUser.setCreateTime(LocalDateTime.now());
+
+        userRepository.save(adminUser);
+    }
 
     @Override
     public User saveUser(User user)

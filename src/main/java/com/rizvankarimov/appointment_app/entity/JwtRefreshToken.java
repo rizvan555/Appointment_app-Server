@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class JwtRefreshToken
 {
     @Id
-    @Column(name = "token_id", nullable = false)
+    @Column(name = "token", nullable = false)
     private String tokenId;
 
     @Column(name = "user_id", nullable = false)

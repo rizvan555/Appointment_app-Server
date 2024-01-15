@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,9 +22,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -50,7 +46,7 @@ public class SecurityConfig
         http
                 .authorizeHttpRequests(auth -> {
                 auth.requestMatchers("/api/authentication/**").permitAll();
-                auth.requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name());
+                //auth.requestMatchers("/api/users/dashboard/admin/**").hasRole(Role.ADMIN.name());
                 auth.requestMatchers("/api/users/**").permitAll();
                 auth.requestMatchers("/api/services/**").permitAll()
                 .anyRequest().authenticated();
