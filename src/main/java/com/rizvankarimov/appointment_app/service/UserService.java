@@ -1,11 +1,9 @@
 package com.rizvankarimov.appointment_app.service;
 
-
 import com.rizvankarimov.appointment_app.entity.MyServices;
 import com.rizvankarimov.appointment_app.entity.Role;
 import com.rizvankarimov.appointment_app.entity.User;
-import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +14,9 @@ import java.util.Optional;
  */
 public interface UserService
 {
+    @Transactional
+    MyServices addService(MyServices myServices);
+
     User saveUser(User user);
 
     Optional<User> findByUsername(String username);
@@ -26,8 +27,11 @@ public interface UserService
 
     User findUserById(Long id);
 
-    Service addService(MyServices myServices);
-
 
     void createAdminUser();
+
+    void addService();
+
+    List<MyServices> getAllServices();
+
 }

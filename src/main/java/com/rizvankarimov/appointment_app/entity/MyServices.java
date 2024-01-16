@@ -10,8 +10,6 @@ public class MyServices {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "service", unique = true, nullable = false, length = 100)
-    private String service;
 
     @Column(name = "username", unique = true, nullable = false, length = 100)
     private String username;
@@ -24,5 +22,11 @@ public class MyServices {
 
     @Column(name = "date", nullable = false)
     private String date;
+
+    @Column(name = "selectedService", nullable = false)
+    private String selectedService;
+
+    @Column(name = "selectedTimeStart", nullable = false)
+    private String selectedTimeStart;
 
 }

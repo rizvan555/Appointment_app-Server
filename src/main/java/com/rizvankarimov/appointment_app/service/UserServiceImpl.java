@@ -32,6 +32,18 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
+    public void addService() {
+
+    }
+
+
+    @Override
+    @Transactional
+    public MyServices addService(MyServices myServices) {
+        return serviceRepository.save(myServices);
+    }
+
+    @Override
     public User saveUser(User user)
     {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -66,8 +78,8 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public Service addService(MyServices myServices)
-    {
-    return (Service) serviceRepository.save(myServices);
-}
+    public List<MyServices> getAllServices() {
+        return serviceRepository.findAll();
     }
+
+}

@@ -3,6 +3,7 @@ package com.rizvankarimov.appointment_app.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * @author sa
@@ -42,4 +43,5 @@ public class User
 
     @Transient
     private String refreshToken;
+
 }
