@@ -1,12 +1,14 @@
 package com.rizvankarimov.appointment_app.controller;
 
 import com.rizvankarimov.appointment_app.entity.Role;
+import com.rizvankarimov.appointment_app.entity.User;
 import com.rizvankarimov.appointment_app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import com.rizvankarimov.appointment_app.security.UserPrincipal;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/users")
@@ -24,14 +26,17 @@ public class UserController
     @PutMapping("change/{role}")
     public ResponseEntity<?> changeRole(@AuthenticationPrincipal UserPrincipal userPrincipal, @PathVariable Role role)
     {
-        userService.changeRole(role, userPrincipal.getUsername());
-
-        return ResponseEntity.ok(true);
+        if (userPrincipal != null) {
+            userService.changeRole(role, userPrincipal.getUsername());
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.status(500).body("UserPrincipal is null");
+        }
     }
 
     @GetMapping("/allUsers")
-    public ResponseEntity<?> getAllUsers()
-    {
-        return ResponseEntity.ok(userService.findAllUsers());
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> allUsers = userService.findAllUsers();
+        return ResponseEntity.ok(allUsers);
     }
 }

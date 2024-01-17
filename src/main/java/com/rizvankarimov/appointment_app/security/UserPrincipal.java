@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
 
 import java.util.Collection;
@@ -26,8 +27,8 @@ public class UserPrincipal implements UserDetails
 {
     private Long id;
     private String username;
-    transient private String password; //don't show up on serialized places.
-    transient private User user; //user for only login operation, don't use in JWT.
+    transient private String password;
+    transient private User user;
     private Set<GrantedAuthority> authorities;
 
     @Override
@@ -71,5 +72,4 @@ public class UserPrincipal implements UserDetails
     {
         return true;
     }
-
 }

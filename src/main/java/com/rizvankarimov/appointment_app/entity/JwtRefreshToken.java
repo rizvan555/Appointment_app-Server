@@ -30,4 +30,5 @@ public class JwtRefreshToken
 
     @Column(name = "expiration_date", nullable = false)
     private LocalDateTime expirationDate;
+
 }

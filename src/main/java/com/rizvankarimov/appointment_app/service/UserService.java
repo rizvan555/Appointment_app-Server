@@ -14,6 +14,8 @@ import java.util.Optional;
  */
 public interface UserService
 {
+    void addService();
+
     @Transactional
     MyServices addService(MyServices myServices);
 
@@ -27,12 +29,8 @@ public interface UserService
 
     User findUserById(Long id);
 
-
     void createAdminUser();
 
-    void addService();
-
     List<MyServices> getAllServices();
-
 
 }
