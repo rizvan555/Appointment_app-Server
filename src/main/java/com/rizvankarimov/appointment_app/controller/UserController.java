@@ -1,6 +1,5 @@
 package com.rizvankarimov.appointment_app.controller;
 
-
 import com.rizvankarimov.appointment_app.entity.Role;
 import com.rizvankarimov.appointment_app.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import com.rizvankarimov.appointment_app.security.UserPrincipal;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @RequestMapping("api/users")
@@ -36,6 +34,4 @@ public class UserController
     {
         return ResponseEntity.ok(userService.findAllUsers());
     }
-
-
 }
