@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Set;
-
+@Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +18,6 @@ public class UserPrincipal implements UserDetails {
     private String password;
     private User user;
     private String email;
-    @Setter
     private String accessToken;
     private Set<GrantedAuthority> authorities;
 
@@ -28,13 +27,13 @@ public class UserPrincipal implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return password;
+    public String getUsername() {
+        return username;
     }
 
     @Override
-    public String getUsername() {
-        return username;
+    public String getPassword() {
+        return password;
     }
 
     @Override
@@ -57,7 +56,4 @@ public class UserPrincipal implements UserDetails {
         return true;
     }
 
-    public String getEmail() {
-        return user.getEmail();
-    }
 }

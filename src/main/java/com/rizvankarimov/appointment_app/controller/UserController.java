@@ -4,6 +4,7 @@ import com.rizvankarimov.appointment_app.entity.Role;
 import com.rizvankarimov.appointment_app.entity.User;
 import com.rizvankarimov.appointment_app.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.rizvankarimov.appointment_app.security.UserPrincipal;
 import org.springframework.security.core.Authentication;
@@ -11,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/users")
@@ -43,20 +45,24 @@ public class UserController
     }
 
     @GetMapping("authUser")
-    public String getAuthenticatedUser() {
+    public ResponseEntity<User> getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             Object principal = authentication.getPrincipal();
 
-            if (principal instanceof UserPrincipal) {
-                String username = ((UserPrincipal) principal).getUsername();
-                return username;
+            if (principal instanceof UserPrincipal userPrincipal) {
+                Optional<User> user = userService.findByUsername(userPrincipal.getUsername());
+                return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null));
             } else {
-                return "Authenticated User (Unknown): " + principal.toString();
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
             }
         } else {
-            return "No authenticated user";
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }
+
+
+
+
 
 }
