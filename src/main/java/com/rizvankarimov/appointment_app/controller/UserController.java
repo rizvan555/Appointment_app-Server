@@ -50,7 +50,7 @@ public class UserController
 
             if (principal instanceof UserPrincipal) {
                 String username = ((UserPrincipal) principal).getUsername();
-                return "Authenticated User: " + username;
+                return username;
             } else {
                 return "Authenticated User (Unknown): " + principal.toString();
             }
