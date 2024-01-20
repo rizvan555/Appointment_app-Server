@@ -9,7 +9,7 @@ public interface JwtProvider
 {
     String generateToken(UserPrincipal auth);
 
-
+    String resolveToken(HttpServletRequest request);
     Authentication getAuthentication(HttpServletRequest request);
 
     boolean isTokenValid(HttpServletRequest request);

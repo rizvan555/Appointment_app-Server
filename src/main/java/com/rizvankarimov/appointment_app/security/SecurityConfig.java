@@ -40,35 +40,37 @@ public class SecurityConfig
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
     {
-        http.csrf(AbstractHttpConfigurer::disable);
-        http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.csrf(AbstractHttpConfigurer::disable).formLogin(form ->
+                form.loginPage("/login")
+                .defaultSuccessUrl("/authenticated").permitAll())
+                .cors(AbstractHttpConfigurer::disable);
 
+        http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http
                 .authorizeHttpRequests(auth -> {
-                auth.requestMatchers("/api/authentication/**").permitAll();
-                //auth.requestMatchers("/api/users/dashboard/admin/**").hasRole(Role.ADMIN.name());
-                auth.requestMatchers("/api/users/**").permitAll();
-                auth.requestMatchers("/api/services/**").permitAll()
-                .anyRequest().authenticated();
+                    auth.requestMatchers("/api/authentication/**").permitAll()
+                            .requestMatchers("/api/users/**").permitAll()
+                            .requestMatchers("/api/services/**").permitAll()
+                            .requestMatchers("/api/users/authUser").authenticated()
+                            .anyRequest().authenticated();
                 });
 
-        http
-                .formLogin(form ->
-                        form.loginPage("/login"));
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider()
-    {
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(customUserDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setPostAuthenticationChecks((user) -> {
+            System.out.println("User successfully authenticated: " + user.getUsername());
+        });
         return authProvider;
     }
+
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception
@@ -88,12 +90,10 @@ public class SecurityConfig
         configuration.applyPermitDefaultValues();
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept"));
+        configuration.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"));
         configuration.setExposedHeaders(Collections.singletonList("Authorization"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }
-

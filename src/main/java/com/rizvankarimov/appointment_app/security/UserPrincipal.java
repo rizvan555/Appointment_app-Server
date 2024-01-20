@@ -1,75 +1,63 @@
 package com.rizvankarimov.appointment_app.security;
 
-
 import com.rizvankarimov.appointment_app.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-
 
 import java.util.Collection;
 import java.util.Set;
 
-/**
- * @author sa
- * @date 23.07.2023
- * @time 14:30
- */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserPrincipal implements UserDetails
-{
+public class UserPrincipal implements UserDetails {
     private Long id;
     private String username;
-    transient private String password;
-    transient private User user;
+    private String password;
+    private User user;
+    private String email;
+    @Setter
+    private String accessToken;
     private Set<GrantedAuthority> authorities;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities()
-    {
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }
 
     @Override
-    public String getPassword()
-    {
+    public String getPassword() {
         return password;
     }
 
     @Override
-    public String getUsername()
-    {
+    public String getUsername() {
         return username;
     }
 
     @Override
-    public boolean isAccountNonExpired()
-    {
+    public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
-    public boolean isAccountNonLocked()
-    {
+    public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
-    public boolean isCredentialsNonExpired()
-    {
+    public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
-    public boolean isEnabled()
-    {
+    public boolean isEnabled() {
         return true;
+    }
+
+    public String getEmail() {
+        return user.getEmail();
     }
 }

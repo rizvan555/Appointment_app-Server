@@ -47,13 +47,16 @@ public class JwtProviderImpl implements JwtProvider {
     }
 
     @Override
+    public String resolveToken(HttpServletRequest request) {
+        return null;
+    }
+
+    @Override
     public Authentication getAuthentication(HttpServletRequest request) {
         String token = SecurityUtils.extractAuthTokenFromRequest(request);
-
         if (token == null) {
             return null;
         }
-
         try {
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_8)))
@@ -62,28 +65,27 @@ public class JwtProviderImpl implements JwtProvider {
                     .getBody();
 
             String username = claims.getSubject();
-            List<GrantedAuthority> authorities = Arrays.stream(claims.get("roles", String.class).split(","))
+            List<String> roles = claims.get("roles", ArrayList.class);
+
+            List<GrantedAuthority> authorities = roles.stream()
                     .map(SecurityUtils::convertToAuthority)
                     .collect(Collectors.toList());
 
+            Set<GrantedAuthority> authoritiesSet = new HashSet<>(authorities);
+
             UserDetails userDetails = UserPrincipal.builder()
                     .username(username)
-                    .authorities((Set<GrantedAuthority>) authorities)
+                    .authorities(authoritiesSet)
                     .build();
 
-            return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
-        } catch (ExpiredJwtException e) {
-            return null; // JWT has expired
-        } catch (SignatureException e) {
-            return null; // Invalid signature
-        } catch (MalformedJwtException e) {
-            return null; // Invalid JWT format
-        } catch (UnsupportedJwtException e) {
-            return null; // JWT is not supported
-        } catch (IllegalArgumentException e) {
-            return null; // JWT claims string is empty
+            return new UsernamePasswordAuthenticationToken(userDetails, null, authoritiesSet);
+        } catch (ExpiredJwtException | SignatureException | MalformedJwtException | UnsupportedJwtException |
+                 IllegalArgumentException e) {
+            return null;
         }
     }
+
+
 
     @Override
     public boolean isTokenValid(HttpServletRequest request) {
