@@ -21,6 +21,8 @@ public interface UserService
 
     User saveUser(User user);
 
+    void updateUser(User user);
+
     Optional<User> findByUsername(String username);
 
     void changeRole(Role newRole, String username);
@@ -29,8 +31,8 @@ public interface UserService
 
     User findUserById(Long id);
 
-    void createAdminUser();
-
     List<MyServices> getAllServices();
+
+
 
 }

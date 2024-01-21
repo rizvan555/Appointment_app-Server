@@ -52,6 +52,7 @@ public class SecurityConfig
                             .requestMatchers("/api/users/**").permitAll()
                             .requestMatchers("/api/services/**").permitAll()
                             .requestMatchers("/api/users/authUser").authenticated()
+                            .requestMatchers("/api/users/update/**").authenticated()
                             .anyRequest().authenticated();
                 });
 

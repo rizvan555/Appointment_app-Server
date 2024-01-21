@@ -61,7 +61,33 @@ public class UserController
         }
     }
 
+    @PutMapping("update/{id}")
+    public ResponseEntity<?> updateUser(@RequestBody User updatedUser, @PathVariable Long id) {
+        try {
+            // Kullanıcıyı veritabanından al
+            User existingUser = userService.findUserById(id);
 
+            // Güncelleme isteği içerisindeki alanları kontrol et ve null değilse güncelle
+            if (updatedUser.getUsername() != null) {
+                existingUser.setUsername(updatedUser.getUsername());
+            }
+            if (updatedUser.getPhone() != null) {
+                existingUser.setPhone(updatedUser.getPhone());
+            }
+            if (updatedUser.getEmail() != null) {
+                existingUser.setEmail(updatedUser.getEmail());
+            }
+
+            // Diğer alanları güncellemek için yine aynı mantığı uygulayabilirsiniz
+
+            // Güncellenmiş kullanıcıyı kaydet
+            userService.updateUser(existingUser);
+
+            return ResponseEntity.ok(true);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user");
+        }
+    }
 
 
 
