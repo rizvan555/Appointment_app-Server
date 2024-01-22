@@ -24,8 +24,8 @@ public class UserServiceImpl implements UserService
 
     public void createAdminUser() {
         User adminUser = new User();
-        adminUser.setUsername("rizvan84");
-        adminUser.setPassword(passwordEncoder.encode("123456"));
+        adminUser.setUsername("rizvan");
+        adminUser.setPassword(passwordEncoder.encode("111111"));
         adminUser.setRole(Role.ADMIN);
         adminUser.setCreateTime(LocalDateTime.now());
 

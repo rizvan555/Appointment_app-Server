@@ -64,10 +64,10 @@ public class UserController
     @PutMapping("update/{id}")
     public ResponseEntity<?> updateUser(@RequestBody User updatedUser, @PathVariable Long id) {
         try {
-            // Kullanıcıyı veritabanından al
+            // Istifadecini veritabanından al
             User existingUser = userService.findUserById(id);
 
-            // Güncelleme isteği içerisindeki alanları kontrol et ve null değilse güncelle
+            // "Update" olunmali bölümler kontrol et ve null değilse "update" et"
             if (updatedUser.getUsername() != null) {
                 existingUser.setUsername(updatedUser.getUsername());
             }
@@ -78,9 +78,7 @@ public class UserController
                 existingUser.setEmail(updatedUser.getEmail());
             }
 
-            // Diğer alanları güncellemek için yine aynı mantığı uygulayabilirsiniz
-
-            // Güncellenmiş kullanıcıyı kaydet
+            // "Update" olunmus istifadecini qeyde
             userService.updateUser(existingUser);
 
             return ResponseEntity.ok(true);

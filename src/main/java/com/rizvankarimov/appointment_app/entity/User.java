@@ -5,11 +5,6 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-/**
- * @author sa
- * @date 23.07.2023
- * @time 14:04
- */
 @Data
 @Entity
 @Table(name = "users")

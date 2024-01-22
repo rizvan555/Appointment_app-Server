@@ -23,6 +23,8 @@ public interface UserService
 
     void updateUser(User user);
 
+    void createAdminUser();
+
     Optional<User> findByUsername(String username);
 
     void changeRole(Role newRole, String username);
