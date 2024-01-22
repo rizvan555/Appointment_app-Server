@@ -10,6 +10,7 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -39,7 +40,6 @@ public class SecurityConfig
     @Autowired
     private final CustomUserDetailsService customUserDetailsService;
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
     {
@@ -59,6 +59,8 @@ public class SecurityConfig
                             .requestMatchers("/api/dashboard/**").hasRole("ADMIN")
                             .requestMatchers("/api/users/allUsers").hasRole("ADMIN")
                             .anyRequest().authenticated();
+
+
                 });
 
         http.authenticationProvider(authenticationProvider());
@@ -80,6 +82,7 @@ public class SecurityConfig
         roleHierarchy.setHierarchy(hierarchy);
         return roleHierarchy;
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
