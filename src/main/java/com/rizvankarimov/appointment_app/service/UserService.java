@@ -35,6 +35,7 @@ public interface UserService
 
     List<MyServices> getAllServices();
 
+    MyServices getServiceById(Long id);
 
 
 }

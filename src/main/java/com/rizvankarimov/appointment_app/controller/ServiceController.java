@@ -25,4 +25,12 @@ public class ServiceController {
     public ResponseEntity<?> getAllServices() {
         return ResponseEntity.ok(userService.getAllServices());
     }
+
+    @GetMapping("allServices/{id}")
+    public ResponseEntity<?> getServiceById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getServiceById(id));
+    }
+
+
+
 }

@@ -86,4 +86,9 @@ public class UserServiceImpl implements UserService
         return serviceRepository.findAll();
     }
 
+    @Override
+    public MyServices getServiceById(Long id) {
+        return serviceRepository.findById(id).get();
+    }
+
 }

@@ -38,7 +38,6 @@ public class AuthenticationController {
     public ResponseEntity<?> refreshToken(@RequestParam String token) {
         return ResponseEntity.ok(jwtRefreshTokenService.generateAccessTokenFromRefreshToken(token));
     }
-
     ;
 }
 
