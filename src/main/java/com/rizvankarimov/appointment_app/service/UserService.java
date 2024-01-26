@@ -17,7 +17,7 @@ public interface UserService
     void addService();
 
     @Transactional
-    MyServices addService(MyServices myServices);
+    void addService(MyServices myServices);
 
     User saveUser(User user);
 

@@ -14,7 +14,7 @@ public class ServiceController {
 
     private final UserService userService;
 
-    @PostMapping("addService")
+    @PostMapping("allServices")
     public ResponseEntity<String> addService(@RequestBody MyServices myServices) {
         userService.addService(myServices);
         return ResponseEntity.ok("Service added successfully");

@@ -6,7 +6,6 @@ import com.rizvankarimov.appointment_app.entity.User;
 import com.rizvankarimov.appointment_app.repository.ServiceRepository;
 import com.rizvankarimov.appointment_app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,8 +37,8 @@ public class UserServiceImpl implements UserService
     }
     @Override
     @Transactional
-    public MyServices addService(MyServices myServices) {
-        return serviceRepository.save(myServices);
+    public void addService(MyServices myServices) {
+        serviceRepository.save(myServices);
     }
 
     @Override
