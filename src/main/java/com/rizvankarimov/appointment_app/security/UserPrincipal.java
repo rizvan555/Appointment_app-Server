@@ -16,10 +16,14 @@ public class UserPrincipal implements UserDetails {
     private Long id;
     private String username;
     private String password;
+    private String phone;
     private User user;
     private String email;
     private String accessToken;
     private Set<GrantedAuthority> authorities;
+
+    public UserPrincipal(User testUser) {
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -55,5 +59,6 @@ public class UserPrincipal implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 
 }

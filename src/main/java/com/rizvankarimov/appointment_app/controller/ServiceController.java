@@ -14,12 +14,11 @@ public class ServiceController {
 
     private final UserService userService;
 
-    @PostMapping("allServices")
+    @PostMapping("addServices")
     public ResponseEntity<String> addService(@RequestBody MyServices myServices) {
         userService.addService(myServices);
         return ResponseEntity.ok("Service added successfully");
     }
-
 
     @GetMapping("allServices")
     public ResponseEntity<?> getAllServices() {

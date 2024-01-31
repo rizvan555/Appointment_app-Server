@@ -12,8 +12,7 @@ import java.util.Optional;
  * @date 23.07.2023
  * @time 14:24
  */
-public interface UserService
-{
+public interface UserService {
     void addService();
 
     @Transactional
@@ -36,6 +35,4 @@ public interface UserService
     List<MyServices> getAllServices();
 
     MyServices getServiceById(Long id);
-
-
 }

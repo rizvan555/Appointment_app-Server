@@ -46,10 +46,12 @@ public class UserController
 
     @GetMapping("authUser")
     public ResponseEntity<User> getAuthenticatedUser() {
+        //Burada istifadeci adi ve sifresi ile gelen isteklerde istifadeci adini ve sifresini veritabaninda axtarir ve qaytarir
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        //Burada eger istifadeci adi ve sifresi ile gelen isteklerde istifadeci adi ve sifresi veritabaninda varsa istifadecini qaytarir
         if (authentication != null && authentication.isAuthenticated()) {
             Object principal = authentication.getPrincipal();
-
             if (principal instanceof UserPrincipal userPrincipal) {
                 Optional<User> user = userService.findByUsername(userPrincipal.getUsername());
                 return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null));
