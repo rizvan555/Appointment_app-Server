@@ -108,8 +108,6 @@ public class UserControllerTest {
 
 
 
-
-
     @Test
     void getUnauthenticatedUserTest() {
         UserService userService = mock(UserService.class);
