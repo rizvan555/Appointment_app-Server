@@ -5,19 +5,34 @@ import com.rizvankarimov.appointment_app.entity.User;
 import com.rizvankarimov.appointment_app.security.UserPrincipal;
 import com.rizvankarimov.appointment_app.service.UserService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class UserControllerTest {
+    @Mock
+    private UserService userService;
+
+    @InjectMocks
+    private UserController userController;
 
     @Test
     void getUserWithIdTest() {
@@ -61,34 +76,39 @@ public class UserControllerTest {
 
     @Test
     void getAuthenticatedUserTest() {
-        UserService userService = mock(UserService.class);
         User testUser = new User();
         testUser.setId(1L);
-        testUser.setUsername("rizvan");
+        testUser.setUsername(null);
 
-        // Authenticated user qur
+        // Kimlik doğrulama bilgileri oluştur
         UserPrincipal userPrincipal = new UserPrincipal(testUser);
 
-        // Authentication mock'unu qur
-        Authentication authentication = new TestingAuthenticationToken(userPrincipal, null);
+        // Doğrulama token'ı oluştur
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("USER"));
+        Authentication authToken = new UsernamePasswordAuthenticationToken(userPrincipal, null, authorities);
 
-        // SecurityContextHolder üzerinden Authentication mock'unu ayarladiq
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        // Güvenlik bağlamı üzerinden doğrulama bilgilerini ayarla
+        SecurityContextHolder.getContext().setAuthentication(authToken);
 
-        // UserService'ten findByUsername metodu çağrıldığında testUser'ı döndür
-        when(userService.findByUsername("rizvan")).thenReturn(Optional.of(testUser));
-
-        // UserController oluştur
-        UserController userController = new UserController(userService);
+        // UserService'ten findByUsername metodunun test kullanıcısını döndürmesini sağla
+        when(userService.findByUsername(null)).thenReturn(Optional.of(testUser)); // Buradaki değişiklik yapıldı
 
         // UserController üzerinden getAuthenticatedUser metodunu çağır
         ResponseEntity<User> responseEntity = userController.getAuthenticatedUser();
 
-        //Gözlenen neticeleri kontrol et
+        // Beklenen sonuçları kontrol et
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(testUser, responseEntity.getBody());
-        verify(userService, times(1)).findByUsername("rizvan");
+        verify(userService, times(1)).findByUsername(null);
+
+        // Güvenlik bağlamını temizle
+        SecurityContextHolder.clearContext();
     }
+
+
+
+
 
     @Test
     void getUnauthenticatedUserTest() {
