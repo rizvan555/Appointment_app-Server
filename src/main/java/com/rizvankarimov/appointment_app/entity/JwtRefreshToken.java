@@ -8,11 +8,6 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/**
- * @author sa
- * @date 23.07.2023
- * @time 14:03
- */
 @Data
 @Entity
 @Table(name = "jwt_refresh_token")

@@ -1,6 +1,5 @@
 package com.rizvankarimov.appointment_app.controller;
 
-
 import com.rizvankarimov.appointment_app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

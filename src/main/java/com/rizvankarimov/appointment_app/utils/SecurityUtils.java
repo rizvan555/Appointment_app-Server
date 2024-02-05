@@ -6,11 +6,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.StringUtils;
 
-/**
- * @author sa
- * @date 23.07.2023
- * @time 14:00
- */
 public class SecurityUtils
 {
     public static final String ROLE_PREFIX = "ROLE_";

@@ -11,10 +11,11 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long>
 {
+
     Optional<User> findByUsername(String username);
 
+    //Burada userlerin rollerini değiştirebilmek için bir query yazdıq
     @Modifying
     @Query("UPDATE User u SET u.role = :role WHERE u.username = :username")
     void updateUserRole(@Param("username") String username, @Param("role") Role role);
-
 }

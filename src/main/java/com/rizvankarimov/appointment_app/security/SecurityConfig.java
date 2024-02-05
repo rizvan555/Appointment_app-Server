@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -45,7 +46,7 @@ public class SecurityConfig
     {
         http.csrf(AbstractHttpConfigurer::disable).formLogin(form ->
                 form.loginPage("/login")
-                .defaultSuccessUrl("/authenticated").permitAll())
+                .defaultSuccessUrl("/api/authentication").permitAll())
                 .cors(AbstractHttpConfigurer::disable);
         http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http
@@ -56,10 +57,10 @@ public class SecurityConfig
                             .requestMatchers("/api/services/**").permitAll()
                             .requestMatchers("/api/users/authUser").authenticated()
                             .requestMatchers("/api/users/update/**").authenticated()
+                            .requestMatchers("/api/profile/**").authenticated()
                             .requestMatchers("/api/dashboard/**").hasRole("ADMIN")
                             .requestMatchers("/api/users/allUsers").hasRole("ADMIN")
                             .anyRequest().authenticated();
-
 
                 });
 
