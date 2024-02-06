@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -44,5 +43,12 @@ public class ServiceControllerTest {
         ServiceController serviceController = new ServiceController(userService);
         ResponseEntity<?> responseEntity = serviceController.addService((null));
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    @Test
+    void updateServiceTest(){
+        UserService userService = mock(UserService.class);
+        ServiceController serviceController = new ServiceController(userService);
+        ResponseEntity<?> responseEntity = serviceController.updateService(1L);
     }
 }

@@ -58,7 +58,7 @@ public class SecurityConfig
                             .requestMatchers("/api/users/authUser").authenticated()
                             .requestMatchers("/api/users/update/**").authenticated()
                             .requestMatchers("/api/profile/**").authenticated()
-                            .requestMatchers("/api/dashboard/**").hasRole("ADMIN")
+                            .requestMatchers("/api/dashboard/admin").hasRole("ADMIN")
                             .requestMatchers("/api/users/allUsers").hasRole("ADMIN")
                             .anyRequest().authenticated();
 

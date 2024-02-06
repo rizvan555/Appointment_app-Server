@@ -7,11 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * @author sa
- * @date 23.07.2023
- * @time 14:24
- */
+
 public interface UserService {
     void addService();
 
@@ -35,4 +31,6 @@ public interface UserService {
     List<MyServices> getAllServices();
 
     MyServices getServiceById(Long id);
+
+    Object updateService(Long id);
 }

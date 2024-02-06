@@ -90,4 +90,9 @@ public class UserServiceImpl implements UserService
         return serviceRepository.findById(id).get();
     }
 
+    @Override
+    public Object updateService(Long id) {
+     return serviceRepository.findById(id).get();
+    }
+
 }

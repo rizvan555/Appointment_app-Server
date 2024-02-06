@@ -31,5 +31,8 @@ public class ServiceController {
     }
 
 
-
+    @PutMapping("updateService/{id}")
+    public ResponseEntity<?> updateService(@PathVariable Long id){
+        return ResponseEntity.ok(userService.updateService(id));
+    }
 }
