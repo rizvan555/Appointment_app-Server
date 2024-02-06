@@ -1,12 +1,10 @@
 package com.rizvankarimov.appointment_app.controller;
 
 import com.rizvankarimov.appointment_app.entity.User;
-import com.rizvankarimov.appointment_app.security.UserPrincipal;
 import com.rizvankarimov.appointment_app.security.jwt.JwtProvider;
 import com.rizvankarimov.appointment_app.service.AuthenticationService;
 import com.rizvankarimov.appointment_app.service.JwtRefreshTokenService;
 import com.rizvankarimov.appointment_app.service.UserService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +18,8 @@ public class AuthenticationController {
     private final UserService userService;
     private final JwtRefreshTokenService jwtRefreshTokenService;
     private final JwtProvider jwtProvider;
+    private final AuthenticationService authService;
+
 
     @PostMapping("register")
     public ResponseEntity<?> register(@RequestBody User user) {
@@ -38,7 +38,11 @@ public class AuthenticationController {
     public ResponseEntity<?> refreshToken(@RequestParam String token) {
         return ResponseEntity.ok(jwtRefreshTokenService.generateAccessTokenFromRefreshToken(token));
     }
-    ;
+
+    @GetMapping("logout")
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.findUserById(id));
+    }
 }
 
 

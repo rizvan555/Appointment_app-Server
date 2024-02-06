@@ -51,4 +51,5 @@ public class ServiceControllerTest {
         ServiceController serviceController = new ServiceController(userService);
         ResponseEntity<?> responseEntity = serviceController.updateService(1L);
     }
+
 }

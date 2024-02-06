@@ -6,4 +6,6 @@ public interface AuthenticationService
 {
 
     User signInAndReturnJWT(User signInRequest);
+
+    Object findUserById(long id);
 }

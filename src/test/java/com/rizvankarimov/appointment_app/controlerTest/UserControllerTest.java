@@ -11,17 +11,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
@@ -43,7 +40,7 @@ public class UserControllerTest {
         User testUser = new User();
         testUser.setId(1L);
         testUser.setUsername("rizvan");
-        testUser.setPhone("111111");
+        testUser.setPhone("015151400004");
         testUser.setEmail("rizvan@rizvan.de");
 
         // UserController oluştur
@@ -56,7 +53,7 @@ public class UserControllerTest {
         ResponseEntity<?> responseEntity = userController.getUserById(1L);
 
         // Beklenen sonuçları kontrol et
-        assertEquals(200, responseEntity.getStatusCodeValue()); // HTTP 200 OK
+        assertEquals(200, responseEntity.getStatusCode().value()); // HTTP 200 OK
         assertEquals(testUser, responseEntity.getBody()); // Kullanıcı doğru mu?
 
         // UserService'ten findUserById metodunun UserController tarafından çağrıldığını kontrol et

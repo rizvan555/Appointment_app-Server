@@ -2,8 +2,8 @@ package com.rizvankarimov.appointment_app.service;
 
 
 import com.rizvankarimov.appointment_app.entity.User;
+import com.rizvankarimov.appointment_app.repository.UserRepository;
 import com.rizvankarimov.appointment_app.security.jwt.JwtProvider;
-import com.sun.security.auth.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +17,8 @@ public class AuthenticationServiceImpl implements AuthenticationService
     private final JwtProvider jwtProvider;
     private final AuthenticationManager authenticationManager;
     private final JwtRefreshTokenService jwtRefreshTokenService;
+    private final UserRepository userRepository;
+
 
 
     @Override
@@ -35,4 +37,10 @@ public class AuthenticationServiceImpl implements AuthenticationService
 
         return signInUser;
     }
+
+    @Override
+    public Object findUserById(long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
 }
