@@ -12,9 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -40,10 +38,13 @@ public class AuthControllerTest {
         testUser.setPhone("015151400004");
         testUser.setEmail("rizvan84@gmx.de");
 
-        when(userService.findByUsername("rizvan")).thenReturn(null); // Kullanıcı bulunamadığını simüle et
+        // User tapilmadi simule et
+        when(userService.findByUsername("rizvan")).thenReturn(Optional.empty());
 
+        // Register methodunu cagir
         ResponseEntity<?> responseEntity = authenticationController.register(testUser);
 
+        // Neticenin dogru oldugunu kontrol et
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
     }
 

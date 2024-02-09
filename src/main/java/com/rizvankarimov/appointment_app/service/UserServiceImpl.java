@@ -3,8 +3,10 @@ package com.rizvankarimov.appointment_app.service;
 import com.rizvankarimov.appointment_app.entity.MyServices;
 import com.rizvankarimov.appointment_app.entity.Role;
 import com.rizvankarimov.appointment_app.entity.User;
+import com.rizvankarimov.appointment_app.entity.UserServices;
 import com.rizvankarimov.appointment_app.repository.ServiceRepository;
 import com.rizvankarimov.appointment_app.repository.UserRepository;
+import com.rizvankarimov.appointment_app.repository.UserServiceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class UserServiceImpl implements UserService
     private final UserRepository userRepository;
     private final ServiceRepository serviceRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserServiceRepository userServiceRepository;
+
 
     public void createAdminUser() {
         User adminUser = new User();
@@ -42,10 +46,16 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
+    public void addUserServices(UserServices userServices) {
+        userServiceRepository.save(userServices);
+    }
+
+    @Override
     public User saveUser(User user)
     {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.USER);
+        user.setRole(Role.MANAGER);
         user.setCreateTime(LocalDateTime.now());
 
         return userRepository.save(user);

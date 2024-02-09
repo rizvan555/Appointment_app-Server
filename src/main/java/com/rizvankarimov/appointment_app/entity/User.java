@@ -30,7 +30,7 @@ public class User
     private LocalDateTime createTime;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
+    @Column(name = "role", nullable = false, length = 100)
     private Role role;
 
     private String accessToken;

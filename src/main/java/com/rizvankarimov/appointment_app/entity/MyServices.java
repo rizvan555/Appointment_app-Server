@@ -10,7 +10,7 @@ public class MyServices {
     @Id
     private Long id;
 
-    @Column(name = "username", unique = true, nullable = false, length = 100)
+    @Column(name = "username", unique = false, nullable = false, length = 100)
     private String username;
 
     @Column(name = "email", nullable = false)

@@ -18,7 +18,6 @@ public class AuthenticationController {
     private final UserService userService;
     private final JwtRefreshTokenService jwtRefreshTokenService;
     private final JwtProvider jwtProvider;
-    private final AuthenticationService authService;
 
 
     @PostMapping("register")

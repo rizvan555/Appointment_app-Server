@@ -67,7 +67,7 @@ public class UserControllerTest {
 
         ResponseEntity<?> responseEntity = userController.getAllUsers();
 
-        assertEquals(200, responseEntity.getStatusCodeValue());
+        assertEquals(200, responseEntity.getStatusCode().value());
         verify(userService, times(1)).findAllUsers();
     }
 
