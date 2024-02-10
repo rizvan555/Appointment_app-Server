@@ -20,13 +20,14 @@ public class ServiceControllerTest {
     @InjectMocks
     private ServiceController serviceController;
 
+    // Diese Methode ermöglicht das Testen des Abrufens aller Dienste.
     @Test
     void getAllServicesTest(){
         UserService userService = mock(UserService.class);
         ServiceController serviceController = new ServiceController(userService);
         ResponseEntity<?> responseEntity = serviceController.getAllServices();
-         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-         verify(userService,times(1)).getAllServices();
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        verify(userService,times(1)).getAllServices();
     }
 
     @Test
@@ -37,6 +38,7 @@ public class ServiceControllerTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
+    // Diese Methode testet das Hinzufügen eines Dienstes.
     @Test
     void addServiceTest(){
         UserService userService = mock(UserService.class);
@@ -45,11 +47,11 @@ public class ServiceControllerTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
+    // Diese Methode testet das Aktualisieren eines Dienstes.
     @Test
     void updateServiceTest(){
         UserService userService = mock(UserService.class);
         ServiceController serviceController = new ServiceController(userService);
         ResponseEntity<?> responseEntity = serviceController.updateService(1L);
     }
-
 }

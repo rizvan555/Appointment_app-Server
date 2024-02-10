@@ -31,37 +31,40 @@ public class UserControllerTest {
     @InjectMocks
     private UserController userController;
 
+    // Diese Methode ermöglicht das Testen des Abrufens eines Benutzers anhand seiner ID.
     @Test
     void getUserWithIdTest() {
-        // Mock UserService
+        // Ein Mock-UserService wird erstellt.
         UserService userService = mock(UserService.class);
 
-        // Test edilecek kullanıcı
+        // Zu testender Benutzer
         User testUser = new User();
         testUser.setId(1L);
         testUser.setUsername("rizvan");
         testUser.setPhone("015151400004");
         testUser.setEmail("rizvan@rizvan.de");
 
-        // UserController oluştur
+        // UserController wird erstellt
         UserController userController = new UserController(userService);
 
-        // UserController kullanarak UserService'ten kullanıcıyı alma işlemi
+        // Benutzer abrufen über UserController
         when(userService.findUserById(1L)).thenReturn(testUser);
 
-        // UserController üzerinden getUserById metodunu çağır
+        // getUserById-Methode über UserController aufrufen
         ResponseEntity<?> responseEntity = userController.getUserById(1L);
 
-        // Beklenen sonuçları kontrol et
-        assertEquals(200, responseEntity.getStatusCode().value()); // HTTP 200 OK
-        assertEquals(testUser, responseEntity.getBody()); // Kullanıcı doğru mu?
+        // Erwartete Ergebnisse überprüfen
+        assertEquals(200, responseEntity.getStatusCode().value());
+        assertEquals(testUser, responseEntity.getBody());
 
-        // UserService'ten findUserById metodunun UserController tarafından çağrıldığını kontrol et
+        // Überprüfen, ob die findUserById-Methode des UserService einmal aufgerufen wurde
         verify(userService, times(1)).findUserById(1L);
     }
 
+    // Diese Methode ermöglicht das Testen des Abrufens aller Benutzer.
     @Test
     void getAllUsersTest() {
+        // Ein Mock-UserService wird erstellt.
         UserService userService = mock(UserService.class);
         UserController userController = new UserController(userService);
 
@@ -71,55 +74,58 @@ public class UserControllerTest {
         verify(userService, times(1)).findAllUsers();
     }
 
+    // Diese Methode ermöglicht das Testen des Abrufens des authentifizierten Benutzers.
     @Test
     void getAuthenticatedUserTest() {
+        // Zu testender Benutzer
         User testUser = new User();
         testUser.setId(1L);
         testUser.setUsername(null);
 
-        // Kimlik doğrulama bilgileri oluştur
+        // Benutzerprinzipal erstellen
         UserPrincipal userPrincipal = new UserPrincipal(testUser);
 
-        // Doğrulama token'ı oluştur
+        // Authentifizierungstoken erstellen
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("USER"));
         Authentication authToken = new UsernamePasswordAuthenticationToken(userPrincipal, null, authorities);
 
-        // Güvenlik bağlamı üzerinden doğrulama bilgilerini ayarla
+        // Authentifizierungsinformationen im Sicherheitskontext setzen
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
-        // UserService'ten findByUsername metodunun test kullanıcısını döndürmesini sağla
-        when(userService.findByUsername(null)).thenReturn(Optional.of(testUser)); // Buradaki değişiklik yapıldı
+        // UserService soll den Testbenutzer zurückgeben, wenn findByUsername aufgerufen wird
+        when(userService.findByUsername(null)).thenReturn(Optional.of(testUser));
 
-        // UserController üzerinden getAuthenticatedUser metodunu çağır
+        // getAuthenticatedUser-Methode über UserController aufrufen
         ResponseEntity<User> responseEntity = userController.getAuthenticatedUser();
 
-        // Beklenen sonuçları kontrol et
+        // Erwartete Ergebnisse überprüfen
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(testUser, responseEntity.getBody());
         verify(userService, times(1)).findByUsername(null);
 
-        // Güvenlik bağlamını temizle
+        // Sicherheitskontext zurücksetzen
         SecurityContextHolder.clearContext();
     }
 
-
-
+    // Diese Methode ermöglicht das Testen des Abrufens des nicht authentifizierten Benutzers.
     @Test
     void getUnauthenticatedUserTest() {
+        // Ein Mock-UserService wird erstellt.
         UserService userService = mock(UserService.class);
 
-        // Authentication mock'unu null olarak ayarla (doğrulanmamış kullanıcı)
+        // Authentifizierungsmock auf null setzen (nicht authentifizierter Benutzer)
         SecurityContextHolder.getContext().setAuthentication(null);
 
-        // UserController oluştur
+        // UserController wird erstellt
         UserController userController = new UserController(userService);
 
-        // UserController üzerinden getAuthenticatedUser metodunu çağır
+        // getAuthenticatedUser-Methode über UserController aufrufen
         ResponseEntity<User> responseEntity = userController.getAuthenticatedUser();
 
-        // Beklenen sonuçları kontrol et
-        assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode()); // HTTP 401 Unauthorized
-        assertNull(responseEntity.getBody()); // Kullanıcı null olmalı
+        // Erwartete Ergebnisse überprüfen
+        assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+        assertNull(responseEntity.getBody()); // Benutzer sollte null sein
     }
+
 }

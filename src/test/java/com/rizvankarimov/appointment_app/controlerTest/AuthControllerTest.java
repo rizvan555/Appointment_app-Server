@@ -20,16 +20,15 @@ import static org.mockito.Mockito.when;
 public class AuthControllerTest {
     @Mock
     private UserService userService;
-
     @Mock
     private AuthenticationService authenticationService;
-
     @Mock
     private JwtRefreshTokenService jwtRefreshTokenService;
-
     @InjectMocks
     private AuthenticationController authenticationController;
 
+
+    // Dieser Test überprüft, ob die Benutzerregistrierung erfolgreich ist.
     @Test
     void testRegister_Success() {
         User testUser = new User();
@@ -38,31 +37,33 @@ public class AuthControllerTest {
         testUser.setPhone("015151400004");
         testUser.setEmail("rizvan84@gmx.de");
 
-        // User tapilmadi simule et
+        // Es wird simuliert, dass der Benutzer nicht in der Datenbank vorhanden ist.
         when(userService.findByUsername("rizvan")).thenReturn(Optional.empty());
 
-        // Register methodunu cagir
+        // Die Registrierungsmethode wird aufgerufen.
         ResponseEntity<?> responseEntity = authenticationController.register(testUser);
 
-        // Neticenin dogru oldugunu kontrol et
+        // Es wird überprüft, ob die zurückgegebene Antwort dem erwarteten Ergebnis entspricht.
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
     }
 
+    // Dieser Test überprüft, ob ein Benutzer bereits existiert.
     @Test
     void testRegister_Failure_UserExists() {
+        // Ein vorhandenes Benutzerbeispiel wird erstellt.
         User existingUser = new User();
         existingUser.setUsername("rizvan");
         existingUser.setPassword("123456");
         existingUser.setPhone("015151400004");
         existingUser.setEmail("rizvan84@gmx.de");
 
-        // User tapildigini simule et
+        // Es wird simuliert, dass der Benutzer in der Datenbank vorhanden ist.
         when(userService.findByUsername("rizvan")).thenReturn(Optional.of(existingUser));
 
-        // Register methodunu cagir
+        // Die Registrierungsmethode wird aufgerufen.
         ResponseEntity<?> responseEntity = authenticationController.register(existingUser);
 
-        // Neticenin dogru oldugunu kontrol et
+        // Es wird überprüft, ob die zurückgegebene Antwort dem erwarteten Ergebnis entspricht.
         assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
     }
 }
