@@ -30,6 +30,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 
 @Configuration
 @EnableWebSecurity
@@ -41,16 +43,18 @@ public class SecurityConfig
     @Autowired
     private final CustomUserDetailsService customUserDetailsService;
 
+
+    // SecurityFilterChain Bean zum Konfigurieren das Sicherheitsfilterketten
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
     {
         http.csrf(AbstractHttpConfigurer::disable).formLogin(form ->
                 form.loginPage("/login")
-                .defaultSuccessUrl("/api/authentication").permitAll())
-                .cors(AbstractHttpConfigurer::disable);
-        http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .defaultSuccessUrl("/api/authentication").permitAll());
         http
-                .authorizeHttpRequests(auth -> {
+                .cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth ->
                     auth
                             .requestMatchers("/api/authentication/**").permitAll()
                             .requestMatchers("/api/users/**").permitAll()
@@ -58,17 +62,17 @@ public class SecurityConfig
                             .requestMatchers("/api/users/authUser").authenticated()
                             .requestMatchers("/api/users/update/**").authenticated()
                             .requestMatchers("/api/profile/**").authenticated()
-                            .requestMatchers("/api/dashboard/admin").hasRole("ADMIN")
-                            .requestMatchers("/api/users/allUsers").hasRole("ADMIN")
-                            .anyRequest().authenticated();
+                            .requestMatchers("/api/dashboard/admin","/api/users/allUsers").hasRole("ADMIN")
+                            .anyRequest().authenticated()
+                )
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
-                });
-
-        http.authenticationProvider(authenticationProvider());
-        http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
+    // Benutzerdefinierte WebSecurityExpressionHandler Bean zum Konfigurieren der Rollenhierarchie
     @Bean
     public DefaultWebSecurityExpressionHandler customWebSecurityExpressionHandler() {
         DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
@@ -76,15 +80,18 @@ public class SecurityConfig
         return expressionHandler;
     }
 
+
+    // Rolle Hierarchy bereitstellende RoleHierarchy Bean
     @Bean
     public RoleHierarchy roleHierarchy() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        String hierarchy = "ROLE_ADMIN > ROLE_STAFF \n ROLE_STAFF > ROLE_USER \n ROLE_USER > MANAGER";
+        String hierarchy = "ROLE_ADMIN > ROLE_STAFF\nROLE_STAFF > ROLE_USER\nROLE_USER > ROLE_MANAGER";
         roleHierarchy.setHierarchy(hierarchy);
         return roleHierarchy;
     }
 
 
+    // Authentifizierungsanbieter bereitstellende AuthenticationProvider Bean
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -97,18 +104,23 @@ public class SecurityConfig
     }
 
 
+    // AuthenticationManager Bean bereitstellende Methode
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception
     {
         return config.getAuthenticationManager();
     }
 
+
+    // Passwort-Encoder Bean bereitstellende Methode
     @Bean
     public PasswordEncoder passwordEncoder()
     {
         return new BCryptPasswordEncoder();
     }
 
+
+    // CorsConfigurationSource Bean bereitstellende Methode
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
