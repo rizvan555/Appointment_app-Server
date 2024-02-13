@@ -1,5 +1,6 @@
 package com.rizvankarimov.appointment_app.security.jwt;
 
+import com.rizvankarimov.appointment_app.entity.Role;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +27,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if (authentication != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
+
         } catch (Exception e) {
              response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         }

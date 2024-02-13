@@ -8,12 +8,15 @@ import com.rizvankarimov.appointment_app.repository.ServiceRepository;
 import com.rizvankarimov.appointment_app.repository.UserRepository;
 import com.rizvankarimov.appointment_app.repository.UserServiceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +58,6 @@ public class UserServiceImpl implements UserService
     {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.USER);
-        user.setRole(Role.MANAGER);
         user.setCreateTime(LocalDateTime.now());
 
         return userRepository.save(user);

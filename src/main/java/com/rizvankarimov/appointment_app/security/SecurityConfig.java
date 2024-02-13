@@ -2,6 +2,7 @@ package com.rizvankarimov.appointment_app.security;
 
 import com.rizvankarimov.appointment_app.entity.Role;
 import com.rizvankarimov.appointment_app.security.jwt.JwtAuthorizationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +20,12 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -39,38 +44,35 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig
 {
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
-
-    @Autowired
     private final CustomUserDetailsService customUserDetailsService;
-
 
     // SecurityFilterChain Bean zum Konfigurieren das Sicherheitsfilterketten
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
     {
-        http.csrf(AbstractHttpConfigurer::disable).formLogin(form ->
-                form.loginPage("/login")
-                .defaultSuccessUrl("/api/authentication").permitAll());
-        http
-                .cors(AbstractHttpConfigurer::disable)
+        http.cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth ->
-                    auth
-                            .requestMatchers("/api/authentication/**").permitAll()
-                            .requestMatchers("/api/users/**").permitAll()
-                            .requestMatchers("/api/services/**").permitAll()
-                            .requestMatchers("/api/users/authUser").authenticated()
-                            .requestMatchers("/api/users/update/**").authenticated()
-                            .requestMatchers("/api/profile/**").authenticated()
-                            .requestMatchers("/api/dashboard/admin","/api/users/allUsers").hasRole("ADMIN")
-                            .anyRequest().authenticated()
-                )
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+                .formLogin(form -> form.loginPage("/login"));
 
+        http.authorizeHttpRequests(auth ->
+                        auth
+                                .requestMatchers("/api/authentication/**").permitAll() //worked
+                                .requestMatchers("/api/services/**").authenticated() //worked
+                                .requestMatchers("/api/users/authUser").authenticated() //worked
+                                .requestMatchers("/api/users/allUsers").permitAll() //worked
+                                //.requestMatchers("/api/users/allUsers").authenticated() //don't working
+                                .anyRequest().authenticated()
+                )
+                .exceptionHandling(config ->
+                        config.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_NOT_FOUND))
+                );
+
+        http.authenticationProvider(authenticationProvider());
+        http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
 
     // Benutzerdefinierte WebSecurityExpressionHandler Bean zum Konfigurieren der Rollenhierarchie
     @Bean
@@ -85,7 +87,7 @@ public class SecurityConfig
     @Bean
     public RoleHierarchy roleHierarchy() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        String hierarchy = "ROLE_ADMIN > ROLE_STAFF\nROLE_STAFF > ROLE_USER\nROLE_USER > ROLE_MANAGER";
+        String hierarchy = "ADMIN > MANAGER\nMANAGER > USER";
         roleHierarchy.setHierarchy(hierarchy);
         return roleHierarchy;
     }

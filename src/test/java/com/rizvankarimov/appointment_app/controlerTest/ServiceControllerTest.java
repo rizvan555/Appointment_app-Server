@@ -30,6 +30,7 @@ public class ServiceControllerTest {
         verify(userService,times(1)).getAllServices();
     }
 
+    //Diese Methode testet Dienst nach ID abrufen.
     @Test
     void getServiceByIdTest(){
         UserService userService = mock(UserService.class);
@@ -37,6 +38,7 @@ public class ServiceControllerTest {
         ResponseEntity<?> responseEntity = serviceController.getServiceById(1L);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
+
 
     // Diese Methode testet das Hinzufügen eines Dienstes.
     @Test
@@ -46,6 +48,7 @@ public class ServiceControllerTest {
         ResponseEntity<?> responseEntity = serviceController.addService((null));
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
+
 
     // Diese Methode testet das Aktualisieren eines Dienstes.
     @Test

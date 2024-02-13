@@ -38,11 +38,17 @@ public class UserController
         }
     }
 
-    @GetMapping("allUsers")
+    @GetMapping("/allUsers")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> allUsers = userService.findAllUsers();
         return ResponseEntity.ok(allUsers);
     }
+
+//    @GetMapping("authUser")
+//    public ResponseEntity<User> getAuthenticatedUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+//        Optional<User> user = userService.findByUsername(userPrincipal.getUsername());
+//        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null));
+//    }
 
     @GetMapping("authUser")
     public ResponseEntity<User> getAuthenticatedUser() {

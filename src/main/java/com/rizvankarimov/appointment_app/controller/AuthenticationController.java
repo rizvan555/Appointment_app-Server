@@ -19,7 +19,6 @@ public class AuthenticationController {
     private final JwtRefreshTokenService jwtRefreshTokenService;
     private final JwtProvider jwtProvider;
 
-
     @PostMapping("register")
     public ResponseEntity<?> register(@RequestBody User user) {
         if (userService.findByUsername(user.getUsername()).isPresent()) {
